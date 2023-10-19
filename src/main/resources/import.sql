@@ -1,0 +1,3 @@
+-- INSERT INTO fmproject.usuario (email, nome, senha, tipo_usuario) VALUES('josiassxz@gmail.com', 'josias silva siqueira', '32588903', 1);
+--
+-- INSERT INTO fmproject.empresa (cnpj, email, nome, razao_social, telefone, usuario_id) VALUES('32918102000187', 'cdkbaterias@gmail.com', 'cdk baterias', 'cdk', '32588903', 1);

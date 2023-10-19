@@ -1,0 +1,41 @@
+version: "23.0.3"
+
+networks:
+  fm-project-network:
+    driver: bridge
+
+services:
+  fm-project-mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - "3306:3306"
+    networks:
+      - fm-project-network
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p$MYSQL_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  fm-project-api:
+    image: josiassxz/fm-projectfinalversion
+    volumes:
+      - storage-local:/app
+    environment:
+      DB_HOST: "fm-project-mysql"
+    ports:
+      - "8080:8080"
+    networks:
+      - fm-project-network
+    depends_on:
+      fm-project-mysql:
+        condition: service_healthy
+volumes:
+      storage-local:
+       driver: local
+       driver_opts:
+        type: none
+        o: bind
+        device: C:\arquivos
