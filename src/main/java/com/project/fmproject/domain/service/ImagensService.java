@@ -100,9 +100,6 @@ public class ImagensService {
                     if (documentoExistente.getId() != null && documentoExistente.getId().equals(documentoAtualizado.getId())) {
                         documentoEncontrado = true;
 
-                        if (!documentoExistente.getTipo().equals(documentoAtualizado.getTipo())) {
-                            documentoExistente.setTipo(documentoAtualizado.getTipo());
-                        }
 
                         equipamentoAtualizado.getDocumentos().remove(i);
                         numDocumentos--;

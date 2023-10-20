@@ -15,6 +15,7 @@ public class Documentos {
     private Long id;
     private String caminho;
     private String nome;
+    @Column(nullable = false) // Permite valor nulo
     private String tipo;
     @Lob
     private byte[] arquivo;
