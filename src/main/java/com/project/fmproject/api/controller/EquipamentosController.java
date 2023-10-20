@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import java.io.File;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
@@ -111,6 +113,37 @@ public class EquipamentosController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/download/posto/{postoId}")
+    public ResponseEntity<String> downloadDocumentosByPostoId(@PathVariable Long postoId) throws IOException {
+        Pageable pageable = PageRequest.of(0, 1); // Configura o limite para 1 resultado
+
+        Page<Documentos> documentosPage = documentosRepository.findDocumentsByPostoIdAndTipoIsNullOrderByidAsc(postoId, pageable);
+
+        if (documentosPage.hasContent()) {
+            Documentos documento = documentosPage.getContent().get(0);
+            Path caminho = Paths.get(documento.getCaminho());
+
+            if (Files.exists(caminho)) {
+                byte[] bytes = Files.readAllBytes(caminho);
+                String base64Content = Base64.getEncoder().encodeToString(bytes);
+                String fileName = caminho.getFileName().toString();
+
+                HttpHeaders headers = new HttpHeaders();
+                headers.add("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+                headers.add("Access-Control-Expose-Headers", "filename");
+                headers.add("filename", fileName);
+                headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+
+                return new ResponseEntity<>(base64Content, headers, HttpStatus.OK);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
     @GetMapping("/download/lista")
     public ResponseEntity<byte[]> downloadListaDocumentos(@RequestParam("ids") List<Long> ids) throws IOException {
