@@ -87,12 +87,12 @@ public class EmpresaController {
         return ResponseEntity.noContent().build();
     }
 
-//    @GetMapping("/pesquisar")
-//    public Page<PostoContagem> filtrarEmpresas(@RequestParam(value = "nome", required = false) String nome,
-//                                               @RequestParam(value = "cnpj", required = false) String cnpj,
-//                                               @RequestParam(value = "razaoSocial", required = false) String razaoSocial,
-//                                               Pageable pageable ) {
-//        Specification<PostoContagem> specification = EmpresaSpecification.filtrarEmpresas(nome, cnpj, razaoSocial);
-//        return postoContagemRepository.findAll(specification, pageable);
-//    }
+    @GetMapping("/pesquisar")
+    public Page<PostoContagem> filtrarEmpresas(@RequestParam(value = "local", required = false) String local,
+                                               @RequestParam(value = "km", required = false) String km,
+                                               @RequestParam(value = "dataContagem", required = false) String dataContagem,
+                                               Pageable pageable ) {
+        Specification<PostoContagem> specification = EmpresaSpecification.filtrarEmpresas(local, km, dataContagem);
+        return postoContagemRepository.findAll(specification, pageable);
+    }
 }
