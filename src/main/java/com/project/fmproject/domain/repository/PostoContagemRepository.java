@@ -10,10 +10,10 @@ import java.util.Optional;
 
 public interface PostoContagemRepository extends JpaRepository<PostoContagem, Long>, JpaSpecificationExecutor<PostoContagem> {
 
-    List<PostoContagem> findByNomeContainingIgnoreCase(String nome);
+//    List<PostoContagem> findByNomeContainingIgnoreCase(String des);
 
 
-    Optional<PostoContagem> findByCnpj(String cnpj);
+//    Optional<PostoContagem> findByCnpj(String cnpj);
 
 
 }

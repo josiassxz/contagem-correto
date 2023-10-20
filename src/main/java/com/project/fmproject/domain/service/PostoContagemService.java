@@ -6,6 +6,7 @@ import com.project.fmproject.domain.model.PostoContagem;
 import com.project.fmproject.domain.model.Usuario;
 import com.project.fmproject.domain.repository.PostoContagemRepository;
 import com.project.fmproject.domain.repository.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,14 +16,15 @@ import java.util.List;
 
 @Service
 public class PostoContagemService {
-    private final PostoContagemRepository postoContagemRepository;
+    @Autowired
+    private  PostoContagemRepository postoContagemRepository;
+    @Autowired
+    private  UsuarioRepository usuarioRepository;
 
-    private final UsuarioRepository usuarioRepository;
-
-    public PostoContagemService(PostoContagemRepository postoContagemRepository, UsuarioRepository usuarioRepository) {
-        this.postoContagemRepository = postoContagemRepository;
-        this.usuarioRepository = usuarioRepository;
-    }
+//    public PostoContagemService(PostoContagemRepository postoContagemRepository, UsuarioRepository usuarioRepository) {
+//        this.postoContagemRepository = postoContagemRepository;
+//        this.usuarioRepository = usuarioRepository;
+//    }
 
     public Page<PostoContagem> listarEmpresas(Pageable pageable) {
         return postoContagemRepository.findAll(pageable);

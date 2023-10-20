@@ -69,7 +69,7 @@ public class EquipamentosController {
 
     @GetMapping("/lista/{id}")
     public ResponseEntity<List<Imagens>> findAll(@RequestParam Long id) {
-        return ResponseEntity.ok(imagensRepository.findAllByPostoContagem_Id(id));
+        return ResponseEntity.ok(imagensRepository.findAllByPosto_Id(id));
     }
 
     @GetMapping("/{id}")
