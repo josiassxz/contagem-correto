@@ -11,10 +11,12 @@ import java.util.List;
 
 public interface DocumentosRepository extends JpaRepository<Documentos, Long> {
 
-    @Query("SELECT doc FROM Documentos doc " +
+    @Query("SELECT doc, img " +
+            "FROM Documentos doc " +
             "INNER JOIN doc.imagem img " +
             "WHERE doc.tipo IS NULL AND img.posto.id = :postoId " +
             "ORDER BY doc.id ASC")
-    Page<Documentos> findDocumentsByPostoIdAndTipoIsNullOrderByidAsc(@Param("postoId") Long postoId, Pageable pageable);
+    Page<Object[]> findDocumentsAndImagesByPostoIdAndTipoIsNullOrderByidAsc(@Param("postoId") Long postoId, Pageable pageable);
+
 
 }

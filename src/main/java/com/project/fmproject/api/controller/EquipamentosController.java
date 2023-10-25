@@ -23,9 +23,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -114,27 +112,33 @@ public class EquipamentosController {
     }
 
     @GetMapping("/download/posto/{postoId}")
-    public ResponseEntity<String> downloadDocumentosByPostoId(@PathVariable Long postoId) throws IOException {
+    public ResponseEntity<Map<String, Object>> downloadDocumentosAndImagesByPostoId(@PathVariable Long postoId) throws IOException {
         Pageable pageable = PageRequest.of(0, 1); // Configura o limite para 1 resultado
 
-        Page<Documentos> documentosPage = documentosRepository.findDocumentsByPostoIdAndTipoIsNullOrderByidAsc(postoId, pageable);
+        Page<Object[]> documentosAndImagesPage = documentosRepository.findDocumentsAndImagesByPostoIdAndTipoIsNullOrderByidAsc(postoId, pageable);
 
-        if (documentosPage.hasContent()) {
-            Documentos documento = documentosPage.getContent().get(0);
+        if (documentosAndImagesPage.hasContent()) {
+            Object[] result = documentosAndImagesPage.getContent().get(0);
+            Documentos documento = (Documentos) result[0];
+            Imagens imagem = (Imagens) result[1];
+
             Path caminho = Paths.get(documento.getCaminho());
 
             if (Files.exists(caminho)) {
                 byte[] bytes = Files.readAllBytes(caminho);
+
+                // Converta os bytes para uma string Base64
                 String base64Content = Base64.getEncoder().encodeToString(bytes);
-                String fileName = caminho.getFileName().toString();
+
+                Map<String, Object> responseMap = new HashMap<>();
+                responseMap.put("documento", documento); // Adicione o objeto Documentos à resposta
+//                responseMap.put("imagem", imagem); // Adicione o objeto Imagens à resposta
+                responseMap.put("base64Content", base64Content); // Adicione o Base64 dos dados da imagem à resposta
 
                 HttpHeaders headers = new HttpHeaders();
-                headers.add("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
-                headers.add("Access-Control-Expose-Headers", "filename");
-                headers.add("filename", fileName);
-                headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+                headers.setContentType(MediaType.APPLICATION_JSON);
 
-                return new ResponseEntity<>(base64Content, headers, HttpStatus.OK);
+                return new ResponseEntity<>(responseMap, headers, HttpStatus.OK);
             } else {
                 return ResponseEntity.notFound().build();
             }
@@ -142,6 +146,10 @@ public class EquipamentosController {
             return ResponseEntity.notFound().build();
         }
     }
+
+
+
+
 
 
     @GetMapping("/download/lista")
