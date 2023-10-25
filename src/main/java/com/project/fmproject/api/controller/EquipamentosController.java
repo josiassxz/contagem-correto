@@ -94,7 +94,6 @@ public class EquipamentosController {
 
 
 
-    /*RETORNAR UM BINARIO !! RECOMENDADO*/
     @GetMapping("/download/{idDocumento}")
     public ResponseEntity<byte[]> downloadDocumento(@PathVariable Long idDocumento) throws IOException {
         Optional<Documentos> optionalDocumento = documentosRepository.findById(idDocumento);

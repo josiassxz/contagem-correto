@@ -39,19 +39,61 @@ public class ImagensService {
     }
 
 
+//    public Imagens salvar(String equipamentosJson, List<MultipartFile> files) throws IOException {
+//        ObjectMapper mapper = new ObjectMapper();
+//        Imagens equipamento = mapper.readValue(equipamentosJson, Imagens.class);
+//
+//        // Obter o diretório atual do projeto
+//        String diretorioAtual = System.getProperty("user.dir");
+//
+//        // Configurar a relação bidirecional entre Equipamento e Documento
+//        List<Documentos> documentos = new ArrayList<>();
+//
+//        for (int i = 0; i < files.size(); i++) {
+//            MultipartFile file = files.get(i);
+//            String caminho = diretorioAtual + File.separator + UUID.randomUUID().getLeastSignificantBits() + " - " + file.getOriginalFilename();
+//            byte[] bytes = file.getBytes();
+//            Path path = Paths.get(caminho);
+//            Files.write(path, bytes);
+//            Documentos documento = new Documentos();
+//            documento.setCaminho(caminho);
+//            documento.setNome(equipamento.getDocumentos().get(i).getNome());
+//            documento.setTipo(equipamento.getDocumentos().get(i).getTipo());
+//            documento.setImagem(equipamento); // Estabelecer a relação com a imagem
+//
+//            documentos.add(documento);
+//        }
+//
+//        equipamento.setDocumentos(documentos);
+//
+//        return imagensRepository.save(equipamento);
+//    }
+
+
+
+
     public Imagens salvar(String equipamentosJson, List<MultipartFile> files) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         Imagens equipamento = mapper.readValue(equipamentosJson, Imagens.class);
 
-        // Obter o diretório atual do projeto
+        // 1. Obter o nome do local do posto
+        String nomeLocalPosto = equipamento.getPosto().getLocal();
+
+        // 2. Criar uma pasta com o nome do local do posto
         String diretorioAtual = System.getProperty("user.dir");
+        String pastaLocalPosto = diretorioAtual + File.separator + nomeLocalPosto;
+
+        File pasta = new File(pastaLocalPosto);
+        if (!pasta.exists()) {
+            pasta.mkdirs(); // Cria a pasta se ela não existe
+        }
 
         // Configurar a relação bidirecional entre Equipamento e Documento
         List<Documentos> documentos = new ArrayList<>();
 
         for (int i = 0; i < files.size(); i++) {
             MultipartFile file = files.get(i);
-            String caminho = diretorioAtual + File.separator + UUID.randomUUID().getLeastSignificantBits() + " - " + file.getOriginalFilename();
+            String caminho = pastaLocalPosto + File.separator + UUID.randomUUID().getLeastSignificantBits() + " - " + file.getOriginalFilename();
             byte[] bytes = file.getBytes();
             Path path = Paths.get(caminho);
             Files.write(path, bytes);
