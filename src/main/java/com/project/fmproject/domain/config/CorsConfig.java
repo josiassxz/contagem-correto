@@ -29,5 +29,12 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowedOrigins("http://localhost:4200", "http://ec2-13-48-104-78.eu-north-1.compute.amazonaws.com:8081")
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowCredentials(true);
+
+
+        // Configuração CORS para "/documentos"
+        registry.addMapping("/documentos/**")
+                .allowedOrigins("http://localhost:4200", "http://ec2-13-48-104-78.eu-north-1.compute.amazonaws.com:8081")
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowCredentials(true);
     }
 }
