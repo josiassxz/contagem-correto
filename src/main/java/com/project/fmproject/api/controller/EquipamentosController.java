@@ -1,6 +1,7 @@
 package com.project.fmproject.api.controller;
 
 
+import com.project.fmproject.domain.dto.DocumentosDTO;
 import com.project.fmproject.domain.model.Documentos;
 import com.project.fmproject.domain.model.Imagens;
 import com.project.fmproject.domain.repository.DocumentosRepository;
@@ -111,8 +112,47 @@ public class EquipamentosController {
         }
     }
 
+//    @GetMapping("/download/posto/{postoId}")
+//    public ResponseEntity<Map<String, Object>> downloadDocumentosAndImagesByPostoId(@PathVariable Long postoId) throws IOException {
+//        Pageable pageable = PageRequest.of(0, 1); // Configura o limite para 1 resultado
+//
+//        Page<Object[]> documentosAndImagesPage = documentosRepository.findDocumentsAndImagesByPostoIdAndTipoIsNullOrderByidAsc(postoId, pageable);
+//
+//        if (documentosAndImagesPage.hasContent()) {
+//            Object[] result = documentosAndImagesPage.getContent().get(0);
+//            Documentos documento = (Documentos) result[0];
+//            Imagens imagem = (Imagens) result[1];
+//
+//            Path caminho = Paths.get(documento.getCaminho());
+//
+//            if (Files.exists(caminho)) {
+//                byte[] bytes = Files.readAllBytes(caminho);
+//
+//                // Converta os bytes para uma string Base64
+//                String base64Content = Base64.getEncoder().encodeToString(bytes);
+//
+//                Map<String, Object> responseMap = new HashMap<>();
+//                responseMap.put("documento", documento); // Adicione o objeto Documentos à resposta
+////                responseMap.put("imagem", imagem); // Adicione o objeto Imagens à resposta
+//                responseMap.put("base64Content", base64Content); // Adicione o Base64 dos dados da imagem à resposta
+//
+//                HttpHeaders headers = new HttpHeaders();
+//                headers.setContentType(MediaType.APPLICATION_JSON);
+//
+//                return new ResponseEntity<>(responseMap, headers, HttpStatus.OK);
+//            } else {
+//                return ResponseEntity.notFound().build();
+//            }
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
+
+
+
+
     @GetMapping("/download/posto/{postoId}")
-    public ResponseEntity<Map<String, Object>> downloadDocumentosAndImagesByPostoId(@PathVariable Long postoId) throws IOException {
+    public ResponseEntity<DocumentosDTO> downloadDocumentosAndImagesByPostoId(@PathVariable Long postoId) throws IOException {
         Pageable pageable = PageRequest.of(0, 1); // Configura o limite para 1 resultado
 
         Page<Object[]> documentosAndImagesPage = documentosRepository.findDocumentsAndImagesByPostoIdAndTipoIsNullOrderByidAsc(postoId, pageable);
@@ -120,7 +160,6 @@ public class EquipamentosController {
         if (documentosAndImagesPage.hasContent()) {
             Object[] result = documentosAndImagesPage.getContent().get(0);
             Documentos documento = (Documentos) result[0];
-            Imagens imagem = (Imagens) result[1];
 
             Path caminho = Paths.get(documento.getCaminho());
 
@@ -130,15 +169,14 @@ public class EquipamentosController {
                 // Converta os bytes para uma string Base64
                 String base64Content = Base64.getEncoder().encodeToString(bytes);
 
-                Map<String, Object> responseMap = new HashMap<>();
-                responseMap.put("documento", documento); // Adicione o objeto Documentos à resposta
-//                responseMap.put("imagem", imagem); // Adicione o objeto Imagens à resposta
-                responseMap.put("base64Content", base64Content); // Adicione o Base64 dos dados da imagem à resposta
+                DocumentosDTO documentosDTO = new DocumentosDTO();
+                documentosDTO.setId(documento.getId());
+                documentosDTO.setBase64Content(base64Content);
 
                 HttpHeaders headers = new HttpHeaders();
                 headers.setContentType(MediaType.APPLICATION_JSON);
 
-                return new ResponseEntity<>(responseMap, headers, HttpStatus.OK);
+                return new ResponseEntity<>(documentosDTO, headers, HttpStatus.OK);
             } else {
                 return ResponseEntity.notFound().build();
             }
@@ -146,6 +184,7 @@ public class EquipamentosController {
             return ResponseEntity.notFound().build();
         }
     }
+
 
 
 
