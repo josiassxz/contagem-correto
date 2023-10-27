@@ -91,20 +91,48 @@ public class ImagensService {
         // Configurar a relação bidirecional entre Equipamento e Documento
         List<Documentos> documentos = new ArrayList<>();
 
+//        for (int i = 0; i < files.size(); i++) {
+//            MultipartFile file = files.get(i);
+//            String caminho = pastaLocalPosto + File.separator + UUID.randomUUID().getLeastSignificantBits() + " - " + file.getOriginalFilename();
+//            byte[] bytes = file.getBytes();
+//            Path path = Paths.get(caminho);
+//            Files.write(path, bytes);
+//            Documentos documento = new Documentos();
+//            documento.setCaminho(caminho);
+//            documento.setNome(equipamento.getDocumentos().get(i).getNome());
+//            documento.setTipo(equipamento.getDocumentos().get(i).getTipo());
+//            documento.setImagem(equipamento); // Estabelecer a relação com a imagem
+//
+//            documentos.add(documento);
+//        }
+
         for (int i = 0; i < files.size(); i++) {
             MultipartFile file = files.get(i);
-            String caminho = pastaLocalPosto + File.separator + UUID.randomUUID().getLeastSignificantBits() + " - " + file.getOriginalFilename();
-            byte[] bytes = file.getBytes();
-            Path path = Paths.get(caminho);
-            Files.write(path, bytes);
-            Documentos documento = new Documentos();
-            documento.setCaminho(caminho);
-            documento.setNome(equipamento.getDocumentos().get(i).getNome());
-            documento.setTipo(equipamento.getDocumentos().get(i).getTipo());
-            documento.setImagem(equipamento); // Estabelecer a relação com a imagem
+            String originalFilename = file.getOriginalFilename();
+            String[] parts = originalFilename.split("-"); // Dividir o nome do arquivo com base no caractere "-"
 
-            documentos.add(documento);
+            if (parts.length >= 3) {
+                String hora = parts[0]; // Os dois primeiros dígitos
+                String minuto = parts[1]; // Os próximos dois dígitos
+
+
+                String caminho = pastaLocalPosto + File.separator + UUID.randomUUID().getLeastSignificantBits() + " - " + originalFilename;
+                byte[] bytes = file.getBytes();
+                Path path = Paths.get(caminho);
+                Files.write(path, bytes);
+
+                Documentos documento = new Documentos();
+                documento.setCaminho(caminho);
+                documento.setNome(equipamento.getDocumentos().get(i).getNome());
+                documento.setTipo(equipamento.getDocumentos().get(i).getTipo());
+                documento.setImagem(equipamento);
+                documento.setHora(hora); // Define a coluna "hora" com o valor extraído
+                documento.setMinuto(minuto); // Define a coluna "minuto" com o valor extraído
+
+                documentos.add(documento);
+            }
         }
+
 
         equipamento.setDocumentos(documentos);
 

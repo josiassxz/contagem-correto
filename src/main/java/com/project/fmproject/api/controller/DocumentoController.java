@@ -17,5 +17,7 @@ public class DocumentoController {
         Documentos documentoAtualizado = documentoService.atualizarDocumento(id, novoDocumento);
         return ResponseEntity.ok(documentoAtualizado);
     }
+
+
 }
 
