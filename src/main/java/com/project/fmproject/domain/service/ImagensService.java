@@ -126,6 +126,7 @@ public class ImagensService {
                 documento.setNome(equipamento.getDocumentos().get(i).getNome());
                 documento.setTipo(equipamento.getDocumentos().get(i).getTipo());
                 documento.setImagem(equipamento);
+                documento.setDataContagem(equipamento.getDocumentos().get(i).getDataContagem());
                 documento.setHora(hora); // Define a coluna "hora" com o valor extraído
                 documento.setMinuto(minuto); // Define a coluna "minuto" com o valor extraído
 
