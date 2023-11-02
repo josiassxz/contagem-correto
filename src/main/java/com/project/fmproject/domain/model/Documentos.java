@@ -18,6 +18,7 @@ public class Documentos {
     private String dataContagem;
     private String hora;
     private String minuto;
+    private int totTipos;
     @Column(nullable = false)
     private String tipo;
     @Lob
